@@ -14,7 +14,7 @@ GDSC_SMILES = {
     'Dasatinib': 'Cc1nc(Nc2ncc(C(=O)Nc3c(C)cccc3Cl)s2)cc(N2CCN(CCO)CC2)n1',
     'Nilotinib': 'Cc1ccc(C(=O)Nc2ccc(C)c(Nc3nccc(-c4cccnc4)n3)c2)cc1C(F)(F)F',
     'Sorafenib': 'CNC(=O)c1cc(Oc2ccc(NC(=O)Nc3ccc(Cl)c(C(F)(F)F)c3)cc2)ccn1',
-    'Sunitinib': 'CCN(CC)CCNC(=O)c1c(C)[nH]c(/C=C2\C(=O)Nc3ccc(F)cc32)c1C',
+    'Sunitinib': r'CCN(CC)CCNC(=O)c1c(C)[nH]c(/C=C2\C(=O)Nc3ccc(F)cc32)c1C',
     'Vemurafenib': 'CCCS(=O)(=O)Nc1ccc(F)c(C(=O)c2c[nH]c3ncc(-c4ccc(Cl)cc4)cc23)c1F',
     'Selumetinib': 'Cc1cc2c(Nc3ccc(I)c(F)c3F)[n]c(=O)[n]c2c(Cl)c1',
     'Paclitaxel': 'CC1=C2C(C(=O)C3(C(CC4C(C3C(C(=C2OC(=O)C5=CC=CC=C5)C)OC(=O)C)(CO4)OC(=O)C)O)C)OC(=O)C6=CC=CC=C6',
