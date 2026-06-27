@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch
+*.pth
+*.pt
+
+# Data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.csv
+
+# Results
+results/
+*.png
+*.jpg
+*.pdf
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# IDEs
+.idea/
+.vscode/
