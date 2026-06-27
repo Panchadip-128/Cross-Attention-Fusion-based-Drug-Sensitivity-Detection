@@ -42,9 +42,9 @@ Robust evaluation in cheminformatics requires acknowledging severe dataset imbal
 
 <div align="center">
   <figure>
-    <img src="docs/assets/ic50_distribution_v2.png" alt="Distribution of IC50 Effect Size" width="48%">
+    <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/ic50_distribution_v2.png" alt="Distribution of IC50 Effect Size" width="48%">
     &nbsp;
-    <img src="docs/assets/top_20_categories_v2.png" alt="Top 20 Categories in Drug Name" width="48%">
+    <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/top_20_categories_v2.png" alt="Top 20 Categories in Drug Name" width="48%">
   </figure>
 </div>
 
@@ -69,30 +69,30 @@ All empirical evaluations are conducted under strict non-overlapping scaffold co
 
 ### Scaffold-Blind Test Evaluation
 <div align="center">
-  <img src="docs/assets/scaffold_blind_test.png" alt="Scaffold-Blind Test Evaluation" width="100%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/scaffold_blind_test.png" alt="Scaffold-Blind Test Evaluation" width="100%">
   <br>
   <sub><b>Figure 1:</b> Evaluation on the hold-out test set under Murcko Scaffold splitting. The model achieves an exceptional $R^2 = 0.9962$. The residual distribution (right) is perfectly zero-centered with negligible long-tail variance.</sub>
 </div>
 
 ### Model Comparison & Trajectory Alignment
 <div align="center">
-  <img src="docs/assets/prediction_density.png" alt="Prediction Density by Model" width="48%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/prediction_density.png" alt="Prediction Density by Model" width="48%">
   &nbsp;
-  <img src="docs/assets/binned_effect_size.png" alt="Binned Effect Size vs Actual IC50" width="48%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/binned_effect_size.png" alt="Binned Effect Size vs Actual IC50" width="48%">
   <br>
   <sub><b>Figure 2 (Left):</b> Kernel density estimates comparing our Cross-Attention Fusion against baseline MLPs, standalone BiLSTMs, and standalone Transformers. <b>Figure 3 (Right):</b> Binned effect size alignment demonstrating that our architecture best tracks ground-truth clinical thresholds across all severity bins.</sub>
 </div>
 
 ### K-Fold Cross-Validation Robustness
 <div align="center">
-  <img src="docs/assets/fold_wise_r2.png" alt="Fold-wise R² Heatmap" width="80%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/fold_wise_r2.png" alt="Fold-wise R² Heatmap" width="80%">
   <br>
   <sub><b>Figure 4:</b> 3-Fold Cross-Validation on the Scaffold-Blind Test Set. The variance across folds is $< 0.001$, proving that the model's structural generalization is highly robust and not dependent on favorable seed initializations.</sub>
 </div>
 
 ### Epistemic Uncertainty Quantification (MC Dropout)
 <div align="center">
-  <img src="docs/assets/mc_dropout_uncertainty.png" alt="MC Dropout Uncertainty Quantification" width="100%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/mc_dropout_uncertainty.png" alt="MC Dropout Uncertainty Quantification" width="100%">
   <br>
   <sub><b>Figure 5:</b> 50-pass Monte Carlo Dropout simulation. The model actively bounds novel, out-of-distribution chemical scaffolds with explicit predictive variance limits, ensuring safe failure modes in clinical settings.</sub>
 </div>
@@ -104,9 +104,9 @@ All empirical evaluations are conducted under strict non-overlapping scaffold co
 Deep neural models in oncology must provide actionable, interpretable reasoning for their predictions.
 
 <div align="center">
-  <img src="docs/assets/shap_beeswarm.png" alt="SHAP Global Importance Beeswarm" width="48%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/shap_beeswarm.png" alt="SHAP Global Importance Beeswarm" width="48%">
   &nbsp;
-  <img src="docs/assets/lime_comparison.png" alt="LIME Local Explanation" width="48%">
+  <img src="https://raw.githubusercontent.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection/main/docs/assets/lime_comparison.png" alt="LIME Local Explanation" width="48%">
   <br>
   <sub><b>Left (Global SHAP):</b> Global feature attribution over the validation set, isolating the specific genomic mutations driving global drug resistance. <b>Right (Local LIME):</b> Patient-specific surrogate explanations validating that the Cross-Attention layer has correctly conditioned on the patient's unique multi-omics profile.</sub>
 </div>
@@ -152,3 +152,4 @@ If you use this work in your research, please cite our paper:
 ```
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
+
