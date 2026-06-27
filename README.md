@@ -102,22 +102,38 @@ To ensure robust evaluation and generalization, we strictly analyzed the distrib
 
 ---
 
-## 🔬 Experimental Results & Convergence
+## 🔬 Experimental Results & Model Evaluation
 
-All visualizations below are high-resolution outputs extracted directly from our Jupyter notebooks.
+All visualizations below are pure, high-resolution matplotlib outputs directly extracted from our experimental Jupyter notebooks.
 
-### Training Dynamics
+### Scaffold-Blind Test Evaluation
 <div align="center">
-  <img src="docs/assets/training_curves.png" alt="Training Convergence Curve" width="100%">
+  <img src="docs/assets/scaffold_blind_test.png" alt="Scaffold-Blind Test Evaluation" width="100%">
   <br>
-  <sub><b>Figure:</b> The dual-stream Cross-Attention model rapidly stabilizes and achieves an exceptional validation R² of 0.9958 despite strict Murcko Scaffold-blind splitting.</sub>
+  <sub><b>Figure:</b> Predictive accuracy on the hold-out test set under strict Murcko Scaffold splitting, achieving an exceptional R² = 0.9962 with zero-centered residual distributions.</sub>
+</div>
+
+### Model Comparison & Generalization Metrics
+<div align="center">
+  <img src="docs/assets/prediction_density.png" alt="Prediction Density by Model" width="48%">
+  &nbsp;
+  <img src="docs/assets/binned_effect_size.png" alt="Binned Effect Size vs Actual IC50" width="48%">
+  <br>
+  <sub><b>Left:</b> Prediction density distributions across different architectural baselines, proving that Cross-Attention optimally tracks the true IC50 distribution. <b>Right:</b> Binned effect sizes demonstrating superior alignment of our model against ground-truth thresholds.</sub>
+</div>
+
+### K-Fold Cross-Validation Robustness
+<div align="center">
+  <img src="docs/assets/fold_wise_r2.png" alt="Fold-wise R² Heatmap" width="80%">
+  <br>
+  <sub><b>Figure:</b> 3-Fold CV performance on the Scaffold-Blind Test Set proving consistent, robust generalizability across disparate chemical structures without performance degradation.</sub>
 </div>
 
 ### Epistemic Uncertainty Quantification (MC Dropout)
 <div align="center">
-  <img src="docs/assets/uncertainty_plots.png" alt="Uncertainty Quantification Plot" width="100%">
+  <img src="docs/assets/mc_dropout_uncertainty.png" alt="MC Dropout Uncertainty Quantification (50 passes)" width="100%">
   <br>
-  <sub><b>Figure:</b> Epistemic uncertainty evaluation. The model explicitly flags novel, out-of-distribution chemical scaffolds with high predictive variance.</sub>
+  <sub><b>Figure:</b> 50-pass Monte Carlo Dropout epistemic uncertainty evaluation. The architecture reliably calibrates predictive confidence, bounding novel out-of-distribution chemical scaffolds with explicit variance margins.</sub>
 </div>
 
 ---
