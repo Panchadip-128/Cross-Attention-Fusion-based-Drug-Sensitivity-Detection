@@ -42,10 +42,14 @@ Robust evaluation in cheminformatics requires acknowledging severe dataset imbal
 The GDSC database presents highly skewed predictive distributions. The vast majority of interactions result in negligible sensitivity, highlighting the sheer difficulty of predicting true positive clinical responses. Furthermore, as seen in the Top 20 categories chart, specific drug classifications dominate the dataset, necessitating Murcko scaffold stratification.
 
 <p align="center">
-  <img src="docs/assets/ic50_distribution_v2.png" width="48%" />
-  <img src="docs/assets/top_20_categories_v2.png" width="48%" />
+  <img src="docs/assets/ic50_distribution_v2.png" width="70%" />
 </p>
-<p align="center"><i><b>Figure 1 & 2:</b> (Left) The highly exponential decay of the log-transformed IC50 target variable. (Right) The heavy tail of structural classifications requiring scaffold-blind splitting.</i></p>
+<p align="center"><i><b>Figure 1:</b> The highly exponential decay of the log-transformed IC50 target variable. The vast majority of interactions result in negligible sensitivity, highlighting the sheer difficulty of predicting true positive clinical responses.</i></p>
+
+<p align="center">
+  <img src="docs/assets/top_20_categories_v2.png" width="70%" />
+</p>
+<p align="center"><i><b>Figure 2:</b> The heavy tail of structural classifications. Certain drug families dominate the dataset, necessitating Murcko scaffold-blind splitting to prevent the model from memorizing structural classes.</i></p>
 
 ### 2.2. Relational Database Engineering (ERD)
 
@@ -185,10 +189,14 @@ To validate that our $R^2 = 0.9962$ is not a point-estimate anomaly resulting fr
 The visual plots below confirm our statistical findings. The residual distribution on the hold-out test set is perfectly zero-centered with negligible long-tail variance, proving the model generalizing effectively to unseen Murcko Scaffolds.
 
 <p align="center">
-  <img src="docs/assets/scaffold_blind_test.png" width="48%" />
-  <img src="docs/assets/prediction_density.png" width="48%" />
+  <img src="docs/assets/scaffold_blind_test.png" width="70%" />
 </p>
-<p align="center"><i><b>Figure 6 & 7:</b> (Left) Scatter plot of true vs predicted IC50 showing a near-perfect diagonal fit. (Right) Kernel Density Estimate proving our Cross-Attention (green) fits the true label distribution far better than baseline transformers.</i></p>
+<p align="center"><i><b>Figure 6:</b> Scatter plot of true vs predicted IC50 showing a near-perfect diagonal fit. The residual distribution on the hold-out test set is perfectly zero-centered with negligible long-tail variance, proving the model generalizing effectively to unseen Murcko Scaffolds.</i></p>
+
+<p align="center">
+  <img src="docs/assets/prediction_density.png" width="70%" />
+</p>
+<p align="center"><i><b>Figure 7:</b> Kernel Density Estimate proving our Cross-Attention (green) fits the true label distribution far better than baseline transformers.</i></p>
 
 ### 4.3. Epistemic Uncertainty Estimation (Bayesian Inference)
 In precision oncology, confident errors are lethal. We calculate Epistemic Uncertainty via Monte Carlo Dropout, running $M=50$ stochastic forward passes at inference time.
@@ -224,10 +232,14 @@ Deep neural models in oncology must provide actionable, interpretable reasoning 
 We utilize SHAP (Global) and LIME (Local) post-hoc explainers. The SHAP beeswarm plot isolates the specific genomic mutations driving overarching drug resistance across the cohort, while LIME provides a patient-specific surrogate explanation, validating that the Cross-Attention layer correctly conditions the prediction solely on the patient's unique multi-omics perturbation profile.
 
 <p align="center">
-  <img src="docs/assets/shap_beeswarm.png" width="48%" />
-  <img src="docs/assets/lime_patient.png" width="48%" />
+  <img src="docs/assets/shap_beeswarm.png" width="70%" />
 </p>
-<p align="center"><i><b>Figure 9 & 10:</b> (Left) Global SHAP Beeswarm identifying overarching resistance biomarkers. (Right) Localized LIME output explaining a specific patient's predicted sensitivity based on their exact TP53/BRAF status.</i></p>
+<p align="center"><i><b>Figure 9:</b> Global SHAP Beeswarm identifying overarching resistance biomarkers across the entire validation cohort.</i></p>
+
+<p align="center">
+  <img src="docs/assets/lime_patient.png" width="70%" />
+</p>
+<p align="center"><i><b>Figure 10:</b> Localized LIME output explaining a specific patient's predicted sensitivity based on their exact TP53/BRAF status.</i></p>
 
 ### 5.2. Enterprise Cloud Architecture Wireframe
 To bridge the gap between computational research and hospital deployment, this wireframe outlines the Kubernetes-based MLOps architecture required to scale the Cross-Attention framework to thousands of concurrent clinical inferences.
