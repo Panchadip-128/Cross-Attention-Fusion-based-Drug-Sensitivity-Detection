@@ -103,28 +103,28 @@ graph TD
     classDef head fill:#d63031,stroke:#ff7675,stroke-width:2px,color:#fff;
     classDef output fill:#00b894,stroke:#55efc4,stroke-width:2px,color:#fff;
 
-    D[Drug SMILES Graph<br>Nodes & Adjacency]:::input --> GNN[GNN Molecular Encoder<br>GraphSAGE / GCN]:::encoder
-    G[Patient Genomic Profile<br>Mutations & CNV]:::input --> SEQ[Linear Projection & PE<br>Sequence Embedding]:::encoder
+    D["Drug SMILES Graph<br>Nodes & Adjacency"]:::input --> GNN["GNN Molecular Encoder<br>GraphSAGE / GCN"]:::encoder
+    G["Patient Genomic Profile<br>Mutations & CNV"]:::input --> SEQ["Linear Projection & PE<br>Sequence Embedding"]:::encoder
 
-    GNN --> D_Emb[Drug Latent Vector<br>e_drug]
-    SEQ --> G_Emb[Genomic Embeddings<br>X_pos]
+    GNN --> D_Emb["Drug Latent Vector<br>e_drug"]
+    SEQ --> G_Emb["Genomic Embeddings<br>X_pos"]
 
-    D_Emb -->|Key & Value| CA[Dynamic Cross-Attention Fusion Layer]:::fusion
+    D_Emb -->|Key & Value| CA["Dynamic Cross-Attention Fusion Layer"]:::fusion
     G_Emb -->|Query| CA
 
-    CA --> Fused[Structure-Conditioned Genome<br>Z_fused]
+    CA --> Fused["Structure-Conditioned Genome<br>Z_fused"]
     
-    Fused --> Trans[Multi-Head Self-Attention<br>Transformer Encoder]:::encoder
-    Fused --> BiLSTM[Bidirectional LSTM<br>Recurrent Dynamics]:::encoder
+    Fused --> Trans["Multi-Head Self-Attention<br>Transformer Encoder"]:::encoder
+    Fused --> BiLSTM["Bidirectional LSTM<br>Recurrent Dynamics"]:::encoder
 
-    Trans --> Concat[Concatenation]
+    Trans --> Concat["Concatenation"]
     BiLSTM --> Concat
 
-    Concat --> AttnPool[Learnable Attention Pooling]:::fusion
-    AttnPool --> MCDrop[Monte Carlo Dropout Layer<br>p=0.5]:::head
-    MCDrop --> MLP[Dense Regression Head<br>GELU & LayerNorm]:::head
+    Concat --> AttnPool["Learnable Attention Pooling"]:::fusion
+    AttnPool --> MCDrop["Monte Carlo Dropout Layer<br>p=0.5"]:::head
+    MCDrop --> MLP["Dense Regression Head<br>GELU & LayerNorm"]:::head
     
-    MLP --> Out[Predicted IC50 Effect Size<br>+ Predictive Variance]:::output
+    MLP --> Out["Predicted IC50 Effect Size<br>+ Predictive Variance"]:::output
 ```
 <p align="center"><i><b>Figure 4:</b> The End-to-End architecture. Notice how the GNN drug embedding serves strictly as the Key/Value, while the patient genome acts as the Query to the Cross-Attention layer.</i></p>
 
@@ -137,25 +137,25 @@ graph TD
     classDef op fill:#e17055,stroke:#fab1a0,stroke-width:2px,color:#fff;
     classDef act fill:#00cec9,stroke:#81ecec,stroke-width:2px,color:#fff;
 
-    Q_in[Genomic Query Input<br>Q ∈ ℝᴸˣᵈ]:::tensor
-    K_in[Chemical Key Input<br>K ∈ ℝ¹ˣᵈ]:::tensor
-    V_in[Chemical Value Input<br>V ∈ ℝ¹ˣᵈ]:::tensor
+    Q_in["Genomic Query Input<br>Q ∈ ℝᴸˣᵈ"]:::tensor
+    K_in["Chemical Key Input<br>K ∈ ℝ¹ˣᵈ"]:::tensor
+    V_in["Chemical Value Input<br>V ∈ ℝ¹ˣᵈ"]:::tensor
 
-    Q_in --> Q_proj[W_q Projection]:::op
-    K_in --> K_proj[W_k Projection]:::op
-    V_in --> V_proj[W_v Projection]:::op
+    Q_in --> Q_proj["W_q Projection"]:::op
+    K_in --> K_proj["W_k Projection"]:::op
+    V_in --> V_proj["W_v Projection"]:::op
 
     Q_proj --> MatMul1((⊗ MatMul)):::op
     K_proj -->|Transpose| MatMul1
 
-    MatMul1 --> Scale[Scale by 1 / √d_k]:::op
-    Scale --> Softmax[Softmax Normalization]:::act
+    MatMul1 --> Scale["Scale by 1 / √d_k"]:::op
+    Scale --> Softmax["Softmax Normalization"]:::act
 
     Softmax --> MatMul2((⊗ MatMul)):::op
     V_proj --> MatMul2
 
-    MatMul2 --> Z[Output Context Z ∈ ℝᴸˣᵈ]:::tensor
-    Z --> AddNorm[Add & LayerNorm]:::op
+    MatMul2 --> Z["Output Context Z ∈ ℝᴸˣᵈ"]:::tensor
+    Z --> AddNorm["Add & LayerNorm"]:::op
     Q_in -->|Residual Connection| AddNorm
 ```
 <p align="center"><i><b>Figure 5:</b> Mathematical topology of the Attention fusion layer. The matrix multiplication (MatMul) explicitly calculates the biomolecular interaction affinities.</i></p>
@@ -207,15 +207,15 @@ graph TD
     classDef logic fill:#0984e3,stroke:#74b9ff,stroke-width:2px,color:#fff;
     classDef out fill:#d63031,stroke:#ff7675,stroke-width:2px,color:#fff;
 
-    Input[Patient X, Drug Y]:::logic --> Loop{For m=1 to M=50}:::logic
-    Loop --> Pass[Forward Pass m<br>with Dropout p=0.5]:::math
-    Pass --> Yhat[Calculate y_hat_m]:::math
+    Input["Patient X, Drug Y"]:::logic --> Loop{"For m=1 to M=50"}:::logic
+    Loop --> Pass["Forward Pass m<br>with Dropout p=0.5"]:::math
+    Pass --> Yhat["Calculate y_hat_m"]:::math
     Yhat --> Loop
     
-    Loop -->|Aggregated| Mean[Predictive Mean<br>μ = (1/M) * Σ(y_hat_m)]:::out
-    Loop -->|Aggregated| Var[Predictive Variance<br>σ² = (1/M) * Σ(y_hat_m - μ)²]:::out
+    Loop -->|Aggregated| Mean["Predictive Mean<br>μ = (1/M) * Σ(y_hat_m)"]:::out
+    Loop -->|Aggregated| Var["Predictive Variance<br>σ² = (1/M) * Σ(y_hat_m - μ)²"]:::out
     
-    Mean --> Final[Clinical Output: μ ± σ]:::out
+    Mean --> Final["Clinical Output: μ ± σ"]:::out
     Var --> Final
 ```
 <p align="center"><i><b>Figure 8:</b> Mathematical flow of the Bayesian MC Dropout process, calculating the predictive mean and variance to quantify model uncertainty.</i></p>
