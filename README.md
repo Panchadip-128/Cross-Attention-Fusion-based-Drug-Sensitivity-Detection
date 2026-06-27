@@ -93,13 +93,9 @@ graph TD
 
 Robust evaluation in cheminformatics requires acknowledging severe dataset imbalances. The GDSC database presents highly skewed predictive distributions that necessitate structural stratification to prevent data leakage.
 
-<div align="center">
-  <figure>
-    <img src="docs/assets/ic50_distribution_v2.png" alt="Distribution of IC50 Effect Size" width="48%">
-    &nbsp;
-    <img src="docs/assets/top_20_categories_v2.png" alt="Top 20 Categories in Drug Name" width="48%">
-  </figure>
-</div>
+| Distribution of IC50 Effect Size | Top 20 Categories in Drug Name |
+| :---: | :---: |
+| ![Distribution of IC50 Effect Size](docs/assets/ic50_distribution_v2.png) | ![Top 20 Categories in Drug Name](docs/assets/top_20_categories_v2.png) |
 
 > **Insights:**
 > * **Left (IC50 Effect Size):** The target follows an exponential decay distribution. The vast majority of interactions result in negligible sensitivity.
@@ -112,29 +108,25 @@ Robust evaluation in cheminformatics requires acknowledging severe dataset imbal
 All empirical evaluations are conducted under strict non-overlapping scaffold constraints to prove generalization capabilities against unseen chemical compounds.
 
 ### Scaffold-Blind Test Evaluation
-<div align="center">
-  <img src="docs/assets/scaffold_blind_test.png" alt="Scaffold-Blind Test Evaluation" width="100%">
-  <br>
-  <sub><b>Figure 1:</b> Evaluation on the hold-out test set under Murcko Scaffold splitting. The model achieves an exceptional $R^2 = 0.9962$. The residual distribution (right) is perfectly zero-centered with negligible long-tail variance.</sub>
-</div>
+
+| Evaluation on the hold-out test set under Murcko Scaffold splitting |
+| :---: |
+| ![Scaffold-Blind Test Evaluation](docs/assets/scaffold_blind_test.png) |
+| <sup><b>Figure 1:</b> The model achieves an exceptional $R^2 = 0.9962$. The residual distribution (right) is perfectly zero-centered with negligible long-tail variance.</sup> |
 
 ### Model Comparison & Trajectory Alignment
-<div align="center">
-  <img src="docs/assets/prediction_density.png" alt="Prediction Density by Model" width="48%">
-  &nbsp;
-  <img src="docs/assets/binned_effect_size.png" alt="Binned Effect Size vs Actual IC50" width="48%">
-  <br>
-  <sub><b>Figure 2 (Left):</b> Kernel density estimates comparing our Cross-Attention Fusion against baseline MLPs, standalone BiLSTMs, and Transformers. <b>Figure 3 (Right):</b> Binned effect size alignment demonstrating that our architecture best tracks ground-truth clinical thresholds.</sub>
-</div>
+
+| Prediction Density by Model | Binned Effect Size vs Actual IC50 |
+| :---: | :---: |
+| ![Prediction Density by Model](docs/assets/prediction_density.png) | ![Binned Effect Size vs Actual IC50](docs/assets/binned_effect_size.png) |
+| <sup><b>Figure 2:</b> Kernel density estimates comparing our Cross-Attention Fusion against baseline MLPs, standalone BiLSTMs, and Transformers.</sup> | <sup><b>Figure 3:</b> Binned effect size alignment demonstrating that our architecture best tracks ground-truth clinical thresholds.</sup> |
 
 ### K-Fold Cross-Validation & Uncertainty
-<div align="center">
-  <img src="docs/assets/fold_wise_r2.png" alt="Fold-wise R² Heatmap" width="48%">
-  &nbsp;
-  <img src="docs/assets/mc_dropout_uncertainty.png" alt="MC Dropout Uncertainty Quantification" width="48%">
-  <br>
-  <sub><b>Figure 4 (Left):</b> 3-Fold Cross-Validation showing variance $< 0.001$. <b>Figure 5 (Right):</b> 50-pass Monte Carlo Dropout simulation explicitly bounding predictive variance limits.</sub>
-</div>
+
+| Fold-wise R² Heatmap | MC Dropout Uncertainty Quantification |
+| :---: | :---: |
+| ![Fold-wise R² Heatmap](docs/assets/fold_wise_r2.png) | ![MC Dropout Uncertainty Quantification](docs/assets/mc_dropout_uncertainty.png) |
+| <sup><b>Figure 4:</b> 3-Fold Cross-Validation showing variance $< 0.001$.</sup> | <sup><b>Figure 5:</b> 50-pass Monte Carlo Dropout simulation explicitly bounding predictive variance limits.</sup> |
 
 ---
 
@@ -142,13 +134,10 @@ All empirical evaluations are conducted under strict non-overlapping scaffold co
 
 Deep neural models in oncology must provide actionable, interpretable reasoning for their predictions.
 
-<div align="center">
-  <img src="docs/assets/shap_beeswarm.png" alt="SHAP Global Importance Beeswarm" width="48%">
-  &nbsp;
-  <img src="docs/assets/lime_comparison.png" alt="LIME Local Explanation" width="48%">
-  <br>
-  <sub><b>Left (Global SHAP):</b> Global feature attribution over the validation set, isolating the specific genomic mutations driving global drug resistance. <b>Right (Local LIME):</b> Patient-specific surrogate explanations validating that the Cross-Attention layer has correctly conditioned on the patient's unique multi-omics profile.</sub>
-</div>
+| SHAP Global Importance Beeswarm | LIME Local Explanation |
+| :---: | :---: |
+| ![SHAP Global Importance Beeswarm](docs/assets/shap_beeswarm.png) | ![LIME Local Explanation](docs/assets/lime_comparison.png) |
+| <sup><b>Left (Global SHAP):</b> Global feature attribution over the validation set, isolating the specific genomic mutations driving global drug resistance.</sup> | <sup><b>Right (Local LIME):</b> Patient-specific surrogate explanations validating that the Cross-Attention layer has correctly conditioned on the patient's unique multi-omics profile.</sup> |
 
 ---
 
