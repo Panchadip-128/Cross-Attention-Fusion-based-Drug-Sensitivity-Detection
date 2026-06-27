@@ -10,69 +10,48 @@ This research proposes a highly interpretative, uncertainty-aware Deep Learning 
 
 ---
 
-## 🔬 1. The Architecture: Fusing Genomics and Chemistry
+## 🔬 Methodology
 
+### 1. Cross-Attention Architecture
 <p align="center">
-  <img src="docs/paper_figures/architecture.jpg" alt="Deep Learning Pipeline Architecture" width="100%">
+  <img src="docs/paper_figures/architecture.jpg" alt="Deep Learning Pipeline Architecture" width="90%">
 </p>
+Our framework utilizes **Dynamic Cross-Attention** to fuse genomic profiles (Query) with chemical graph embeddings (Key/Value). This explicitly forces the model to attend to genetic markers that are biologically relevant to the specific input drug, processed via dual Transformer and BiLSTM streams.
 
-Our framework abandons simple feature concatenation in favor of **Dynamic Cross-Attention**. 
-- **Genomic Profiles** (Gene expression and mutations) act as the *Query*.
-- **Chemical Embeddings** (RDKit-processed drug representations) act as the *Key* and *Value*.
-
-This forces the model to actively "attend" only to the specific genetic markers that are biologically relevant to the input drug's unique chemical structure. The output is processed by dual Transformer and BiLSTM streams to capture both global context and localized genomic sequences.
+### 2. Murcko Scaffold-Blind Splitting
+To simulate true clinical utility and prevent chemical data leakage, we utilize rigorous Murcko Scaffold-blind splitting. The model is evaluated on chemical scaffolds it has *never* seen during training.
 
 ---
 
-## 📈 2. Robust Training and Validation
+## 📈 Key Results
 
+### 1. Robust Predictive Performance
 <p align="center">
-  <img src="docs/paper_figures/training_curves.png" alt="Training Convergence Curves" width="100%">
+  <img src="docs/paper_figures/training_curves.png" alt="Training Convergence" width="80%">
 </p>
+Despite the strict out-of-distribution validation, the dual-stream architecture achieves rapid convergence, reaching a peak **Validation R² of 0.9958**.
 
-To guarantee clinical realism, the model is trained using **Murcko Scaffold-blind splitting**. This ensures no chemical derivatives of the test set exist in the training set, explicitly preventing data leakage.
-- **Superior Convergence:** As shown above, the Dual-Stream Cross-Attention mechanism enables rapid optimization, achieving an exceptional **Validation R² of 0.9958** at epoch 49 before triggering early stopping.
+### 2. Global & Local Interpretability (SHAP & LIME)
+<table>
+  <tr>
+    <td align="center"><b>Global Biomarker Discovery (SHAP)</b></td>
+    <td align="center"><b>Patient-Level Precision (LIME)</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/paper_figures/shap_beeswarm.png" alt="SHAP Beeswarm" width="100%"></td>
+    <td><img src="docs/paper_figures/lime_comparison.png" alt="LIME Comparison" width="100%"></td>
+  </tr>
+  <tr>
+    <td>Identifies `log_ic50_mean_pos` and `Tissue Type` as the absolute dominant drivers of drug resistance across the entire cohort.</td>
+    <td>Proves the Cross-Attention mechanism dynamically shifts feature importance for every unique patient-drug interaction.</td>
+  </tr>
+</table>
 
----
-
-## 🎯 3. Epistemic Uncertainty Quantification
-
+### 3. Epistemic Uncertainty Quantification
 <p align="center">
-  <img src="docs/paper_figures/uncertainty_plots.png" alt="Monte Carlo Dropout Uncertainty Analysis" width="100%">
+  <img src="docs/paper_figures/uncertainty_plots.png" alt="MC Dropout Uncertainty" width="80%">
 </p>
-
-A clinical model must know when it is guessing. We apply **Monte Carlo (MC) Dropout** (50 inference passes) to calculate predictive variance for unseen compounds.
-- **Error Correlation:** As absolute error increases, the model's self-reported uncertainty symmetrically increases (slope = 0.47).
-- **Calibration:** The model reliably flags novel, out-of-distribution chemical structures with high epistemic uncertainty, allowing oncologists to defer to clinical judgment when the AI is unsure.
-
----
-
-## 🧠 4. Global Biomarker Discovery (SHAP)
-
-<p align="center">
-  <img src="docs/paper_figures/shap_bar.png" alt="SHAP Global Bar Chart" width="45%">
-  <img src="docs/paper_figures/shap_beeswarm.png" alt="SHAP Global Beeswarm" width="45%">
-</p>
-
-By integrating SHapley Additive exPlanations, the "black box" is rendered fully transparent. 
-- **The Bar Chart** proves that historical sensitivity metrics (`log_ic50_mean_pos`) and `Tissue Type` are the dominant global drivers of drug resistance.
-- **The Beeswarm Plot** maps the directional impact: High values of specific genomic features systematically drive the predicted $IC_{50}$ higher, directly aligning with established oncological resistance pathways.
-
----
-
-## 👤 5. Patient-Level Interpretability (LIME & SHAP)
-
-<p align="center">
-  <img src="docs/paper_figures/shap_waterfall.png" alt="Patient SHAP Waterfall" width="70%">
-</p>
-
-<p align="center">
-  <img src="docs/paper_figures/lime_comparison.png" alt="LIME Patient Comparison" width="100%">
-</p>
-
-For individual patient cases, the model provides localized reasoning for every prediction:
-- **Waterfall Analysis:** Traces the exact mathematical shift from the baseline expected response ($0.253$) to the specific patient prediction ($0.263$), explicitly quantifying how much weight was placed on the `Tissue Type` (+0.05).
-- **Dynamic Interaction (LIME):** The LIME comparison explicitly proves that the relative importance of biological features dynamically shifts depending on the *exact drug* the patient is receiving, successfully validating the efficacy of the Cross-Attention layer.
+Using **Monte Carlo (MC) Dropout**, the model reliably flags novel, out-of-distribution structures. The strong correlation between predictive variance and absolute error ensures the model knows when it is guessing.
 
 ---
 
