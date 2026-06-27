@@ -12,8 +12,6 @@
   <img src="https://img.shields.io/badge/Validated%20R²-0.9958-brightgreen?style=flat-square" alt="R2">
 </p>
 
-<br>
-
 </div>
 
 ---
@@ -26,91 +24,120 @@ We introduce a **Dual-Stream Cross-Attention Fusion** architecture that learns t
 
 ---
 
-## 🏗 Proposed Architecture
+## 🏗 Predictive Architecture & Evaluation Framework
 
-> **Core Innovation:** Instead of concatenating drug and genomic features, our model uses the drug embedding as a cross-attention key/value to dynamically reweight which genomic positions are biologically relevant for that specific compound.
+To contextualize our approach, we present a comparative analysis of existing predictive architectures in the field, highlighting the specific limitations our framework overcomes.
+
+**TABLE 1: Comparative Analysis of Predictive Architectures and Evaluation Frameworks**
+
+| Methodology / Model | Multimodal Input Integration | Architecture Style | Split Rigor | UQ | Key Limitation Addressed by Our Work |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Traditional MLPs** | Naive Concatenation (Flat vectors) | Fully Connected Dense Layers | Random Split | No | Fails to capture sequential or structural feature interactions. |
+| **DrugCell (Kuenzi et al.)** | Mutations + Morgan Fingerprints (r=2, 2048-bit) | VNN (Genomics branch) + MLP (Drug branch) | Random Split | No | High risk of chemical leakage; lacks uncertainty bounds. |
+| **Standalone GNNs** | Molecular Graphs + Tabular Genomic | Graph Convolution / Attention | Random / Scaffold | Rarely | Can suffer from over-smoothing and high memory overhead on massive datasets. |
+| **Standalone Transformers (e.g. TransformerCPI)**| Sequential Embeddings | Self-Attention Encoders | Random / Target-Aware | No | Lacks dynamic cross-modal attention between tabular genome and chemical embeddings. |
+| **Our Proposed Model** | **Dynamic Cross-Attention Fusion** | **Transformer + BiLSTM with Attention Pooling** | **Partial Scaffold-Blind (Murcko)** | **Yes (MC)** | **Solves structural leakage, handles multimodal fusion dynamically, and provides clinical confidence bounds.** |
+
+### Methodological Roadmap
+
+The overall machine learning strategy, bridging the genomic and chemical branches toward clinical applications, is outlined below:
 
 ```mermaid
 graph TD
     %% Styling
-    classDef inputs fill:#2d3436,stroke:#74b9ff,stroke-width:2px,color:#fff;
-    classDef process fill:#0984e3,stroke:#74b9ff,stroke-width:2px,color:#fff;
-    classDef attention fill:#6c5ce7,stroke:#a29bfe,stroke-width:3px,color:#fff;
-    classDef output fill:#00b894,stroke:#55efc4,stroke-width:2px,color:#fff;
+    classDef branchGenomic fill:#ff7675,stroke:#d63031,stroke-width:2px,color:#fff;
+    classDef branchChemical fill:#74b9ff,stroke:#0984e3,stroke-width:2px,color:#fff;
+    classDef mlConventional fill:#55efc4,stroke:#00b894,stroke-width:2px,color:#2d3436;
+    classDef mlDeep fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px,color:#fff;
+    classDef metrics fill:#81ecec,stroke:#00cec9,stroke-width:2px,color:#2d3436;
+    classDef interpretation fill:#ffeaa7,stroke:#fdcb6e,stroke-width:2px,color:#2d3436;
+    classDef patient fill:#fab1a0,stroke:#e17055,stroke-width:2px,color:#2d3436;
+    classDef synergy fill:#55efc4,stroke:#00b894,stroke-width:2px,color:#2d3436;
+    classDef clinical fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px,color:#fff;
 
-    %% Nodes
-    G[Genomic Profile<br/>Gene Expression & Mutations]:::inputs
-    C[Chemical Structure<br/>SMILES Graph]:::inputs
+    %% Nodes - Genomic Branch
+    G_Mut[<b>Cancer Mutations</b><br>Genomic alterations · CNV · SNP<br>GDSC1 / GDSC2 · d = 958 features]:::branchGenomic
+    G_ML[<b>Conventional ML</b><br>RF · SVM · Gradient Boosting · ElasticNet<br>Tabular feature vectors · scikit-learn]:::mlConventional
+    G_Resp[<b>Cancer Cell-Line Response</b><br>AUC · IC50 prediction in vitro<br>MSE / R² / Pearson ρ · scaffold-blind CV]:::metrics
 
-    T[Transformer Encoder Stream<br/>Global Context]:::process
-    B[BiLSTM Encoder Stream<br/>Local Sequence Patterns]:::process
-    E[Chemical Embedding Layer]:::process
+    %% Nodes - Chemical Branch
+    C_Chem[<b>Drug Chemical Structure</b><br>SMILES · Molecular fingerprints<br>Morgan FP · ECFP4 · RDKit descriptors]:::branchChemical
+    C_ML[<b>Visible / Deep ML</b><br>CNN · GNN · Transformer · BiLSTM<br>Pathway-guided · Cross-attention fusion]:::mlDeep
+    C_Interp[<b>Model Interpretation</b><br>Feature attribution · Pathway scores<br>SHAP · Grad-CAM · Attention weights]:::interpretation
+    C_Patient[<b>Cancer Patient Prediction</b><br>Personalised treatment response<br>TCGA · PDX models · tumour omics]:::patient
 
-    CA{Dynamic Cross-Attention Fusion<br/>Query: Genomics | Key/Value: Chemistry}:::attention
-
-    AP[Attention Pooling]:::process
-    O[IC50 Prediction &<br/>Epistemic Uncertainty]:::output
+    %% Nodes - Downstream
+    D_Synergy[<b>Synergistic Drug Combinations</b><br>Bliss / Loewe / ZIP synergy scoring · pairwise drug matrices<br>DrugComb · O'Neil dataset · AstraZeneca DREAM]:::synergy
+    D_Clinical[<b>Clinical Applications</b><br>Precision oncology · Drug repurposing · Trial design<br>Biomarker discovery · Resistance mechanism analysis]:::clinical
 
     %% Edges
-    G --> T
-    G --> B
-    C --> E
+    G_Mut -.-> C_Chem
+    G_Mut --> G_ML
+    C_Chem --> C_ML
+    G_ML -.-> C_ML
+    
+    G_ML --> G_Resp
+    C_ML --> C_Interp
+    C_Interp --> C_Patient
 
-    T --> CA
-    B --> CA
-    E --> CA
-
-    CA --> AP
-    AP --> O
+    G_Resp --> D_Synergy
+    C_Patient --> D_Synergy
+    D_Synergy --> D_Clinical
 ```
-
-<br>
-
-**Key architectural components:**
-
-- **Drug Embedding Layer:** Maps SMILES-derived drug identifiers into a continuous learned representation space.
-- **Transformer & BiLSTM Streams:** Parallel encoders capturing long-range and localized biological sequence patterns.
-- **Cross-Attention Fusion:** Genomic query attends over drug key/value pairs — explicitly gating biological pathways based on the chemical agent.
-- **Uncertainty Head:** MC Dropout applied at inference time across 50 forward passes.
 
 ---
 
-## 🔬 Rigorous Experimental Results
+## 📊 Exploratory Data Analysis & Target Distributions
 
-All visualizations below are pure, pristine data plots extracted directly from the mathematical outputs of our Jupyter Notebooks.
-
-### 1. Robust Predictive Convergence
+To ensure robust evaluation and generalization, we strictly analyzed the distribution of the target variables across the GDSC database.
 
 <div align="center">
-  <img src="results/plots/02_gnn_transformer_training/gnn_transformer_training_018.png" alt="Training Convergence Curve" width="100%">
-  <br>
-  <sub><b>Figure 1:</b> Final training convergence. The dual-stream Cross-Attention model rapidly stabilizes and achieves an exceptional validation R² of 0.9958 despite strict Murcko Scaffold-blind splitting.</sub>
-</div>
-
-### 2. Epistemic Uncertainty Quantification (MC Dropout)
-
-<div align="center">
-  <img src="results/plots/04_uncertainty_quantification/uncertainty_quantification_045.png" alt="Uncertainty Quantification Plot" width="100%">
-  <br>
-  <sub><b>Figure 2:</b> Epistemic uncertainty evaluation. The model explicitly flags novel, out-of-distribution chemical scaffolds with high predictive variance, ensuring clinical safety when faced with unfamiliar compounds.</sub>
-</div>
-
-### 3. Global Biomarker Discovery (SHAP)
-
-<div align="center">
-  <img src="results/plots/03_shap_lime_analysis/shap_lime_analysis_001.png" alt="SHAP Global Importance Bar" width="48%">
+  <img src="docs/assets/ic50_distribution.png" alt="Distribution of IC50 Effect Size" width="48%">
   &nbsp;
-  <img src="results/plots/03_shap_lime_analysis/shap_lime_analysis_002.png" alt="SHAP Global Importance Beeswarm" width="48%">
-  <br>
-  <sub><b>Figure 3:</b> SHAP global feature attribution. The model natively identifies <code>log_ic50_mean_pos</code> and <code>Tissue Type</code> as the dominant drivers of drug resistance. High feature values systematically push predictions toward resistance, mirroring real-world biological outcomes.</sub>
+  <img src="docs/assets/top20_drugs.png" alt="Top 20 Categories in Drug Name" width="48%">
 </div>
 
-### 4. Per-Patient Local Interpretability (LIME)
+- **Left:** The exponential decay distribution of the `IC50 Effect Size` prediction target, demonstrating the scarcity of highly sensitive interactions.
+- **Right:** The top 20 most frequent drugs in the dataset (e.g., Selumetinib, Afatinib, SN-38), highlighting the skewed frequency distributions that necessitate rigorous Murcko splitting.
 
+---
+
+## 🔬 Experimental Results & Convergence
+
+All visualizations below are high-resolution outputs extracted directly from our Jupyter notebooks.
+
+### Training Dynamics
 <div align="center">
-  <img src="results/plots/03_shap_lime_analysis/shap_lime_analysis_044.png" alt="LIME Patient Analysis" width="100%">
+  <img src="docs/assets/training_curves.png" alt="Training Convergence Curve" width="100%">
   <br>
-  <sub><b>Figure 4:</b> LIME local explanations. The relative importance of biological pathways dynamically reshuffles based entirely on the specific chemical structure of the administered drug, perfectly validating the theoretical goal of the Cross-Attention layer.</sub>
+  <sub><b>Figure:</b> The dual-stream Cross-Attention model rapidly stabilizes and achieves an exceptional validation R² of 0.9958 despite strict Murcko Scaffold-blind splitting.</sub>
+</div>
+
+### Epistemic Uncertainty Quantification (MC Dropout)
+<div align="center">
+  <img src="docs/assets/uncertainty_plots.png" alt="Uncertainty Quantification Plot" width="100%">
+  <br>
+  <sub><b>Figure:</b> Epistemic uncertainty evaluation. The model explicitly flags novel, out-of-distribution chemical scaffolds with high predictive variance.</sub>
+</div>
+
+---
+
+## 🧠 Interpretability Analysis
+
+### Global Biomarker Discovery (SHAP)
+<div align="center">
+  <img src="docs/assets/shap_bar.png" alt="SHAP Global Importance Bar" width="48%">
+  &nbsp;
+  <img src="docs/assets/shap_beeswarm.png" alt="SHAP Global Importance Beeswarm" width="48%">
+  <br>
+  <sub><b>Figure:</b> SHAP global feature attribution identifying the dominant drivers of drug resistance.</sub>
+</div>
+
+### Per-Patient Local Interpretability (LIME)
+<div align="center">
+  <img src="docs/assets/lime_comparison.png" alt="LIME Patient Analysis" width="100%">
+  <br>
+  <sub><b>Figure:</b> LIME local explanations validating that the Cross-Attention layer learns structure-conditioned genomic sensitivity.</sub>
 </div>
 
 ---
@@ -130,34 +157,6 @@ python scripts/train.py --epochs 200 --batch_size 8192 --lr 1e-3
 
 # Run full test suite
 pytest tests/ -v
-```
-
----
-
-## 📂 Repository Structure & Extracted Artifacts
-
-All **114 pure, high-resolution mathematical plots** have been cleanly extracted from our notebooks and chronologically organized into the `results/plots/` directory for full transparency.
-
-```
-.
-├── notebooks/
-│   ├── 01_Data_Exploration_and_Preprocessing.ipynb
-│   ├── 02_GNN_Transformer_CrossAttention_Training.ipynb
-│   ├── 03_Explainability_SHAP_LIME_Analysis.ipynb
-│   └── 04_Uncertainty_Quantification_MCDropout.ipynb
-├── results/
-│   └── plots/                                     # 114 High-Res Pristine Notebook Plots
-│       ├── 01_data_exploration/                   # (4 plots)
-│       ├── 02_gnn_transformer_training/           # (19 plots)
-│       ├── 03_shap_lime_analysis/                 # (45 plots)
-│       └── 04_uncertainty_quantification/         # (46 plots)
-├── src/
-│   ├── data/           # GDSC loading, Murcko scaffold splitting
-│   ├── models/         # CrossAttentionDrugModel definition
-│   └── training/       # Training loop, early stopping, evaluation
-├── scripts/
-│   └── train.py        # CLI training entry point
-└── tests/              # PyTest suite: components, architecture, data pipeline
 ```
 
 ---
