@@ -1,66 +1,77 @@
-# Cross-Attention Fusion of Genomic and Chemical Representations for Robust Drug Sensitivity Prediction
+<div align="center">
+  <img src="https://img.shields.io/badge/Status-Active-success.svg?style=for-the-badge" alt="Status">
+  <img src="https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white" alt="PyTorch">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
+  
+  <br><br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white)](https://pytorch.org/)
+  <h1>🧬 Cross-Attention Fusion of Genomic and Chemical Representations for Robust Drug Sensitivity Prediction</h1>
+  <p><b>A highly interpretable, uncertainty-aware Deep Learning framework for precision oncology.</b></p>
+  
+  <p>
+    This research introduces a novel architecture that fuses pharmacogenomic features (GDSC databases) with SMILES-derived chemical graphs. Unlike traditional models that use naive concatenation, our framework decodes the non-linear interaction between a patient's tumor biology and an anticancer drug's structural chemistry using <b>Dynamic Cross-Attention</b>.
+  </p>
+</div>
 
-Official repository for **"Cross-Attention Fusion of Genomic and Chemical Representations for Robust Drug Sensitivity Prediction"**. 
-
-This research proposes a highly interpretative, uncertainty-aware Deep Learning framework. By fusing pharmacogenomic features (GDSC databases) with SMILES-derived chemical graphs, the architecture decodes the non-linear interaction between a patient's tumor biology and an anticancer drug's structural chemistry.
-
----
-
-## 🔬 Methodology
-
-### 1. Cross-Attention Architecture
-<p align="center">
-  <img src="docs/paper_figures/architecture.jpg" alt="Deep Learning Pipeline Architecture" width="90%">
-</p>
-Our framework utilizes **Dynamic Cross-Attention** to fuse genomic profiles (Query) with chemical graph embeddings (Key/Value). This explicitly forces the model to attend to genetic markers that are biologically relevant to the specific input drug, processed via dual Transformer and BiLSTM streams.
-
-### 2. Murcko Scaffold-Blind Splitting
-To simulate true clinical utility and prevent chemical data leakage, we utilize rigorous Murcko Scaffold-blind splitting. The model is evaluated on chemical scaffolds it has *never* seen during training.
+<br>
 
 ---
 
-## 📈 Key Results
+## 🔬 Proposed Architecture
 
-### 1. Robust Predictive Performance
-<p align="center">
-  <img src="docs/paper_figures/training_curves.png" alt="Training Convergence" width="80%">
-</p>
-Despite the strict out-of-distribution validation, the dual-stream architecture achieves rapid convergence, reaching a peak **Validation R² of 0.9958**.
+> **The Core Innovation:** Abandoning simple flat-vector concatenation in favor of dynamic sequence-to-sequence fusion.
 
-### 2. Global & Local Interpretability (SHAP & LIME)
-<table>
+<div align="center">
+  <img src="docs/paper_figures/architecture_proposed.png" alt="Proposed Cross-Attention Drug-Genomic Fusion Architecture" width="100%">
+  <br>
+  <em><small><b>Figure 1:</b> The Proposed Cross-Attention Drug-Genomic Fusion Architecture.</small></em>
+</div>
+
+- **Genomic Profiles** (Gene expression and mutations) act as the *Query*.
+- **Chemical Embeddings** (RDKit-processed drug representations) act as the *Key* and *Value*.
+
+This forces the network to actively "attend" only to the specific genetic markers that are biologically relevant to the input drug's unique chemical structure. The representations are then processed via dual Transformer and BiLSTM streams to capture both global context and localized sequences.
+
+---
+
+## 📊 Rigorous Benchmarking & Ablation
+
+To simulate true clinical utility and prevent chemical data leakage, we utilize rigorous **Murcko Scaffold-blind splitting**. The model is evaluated on chemical scaffolds it has *never* seen during training.
+
+<table align="center" width="100%">
   <tr>
-    <td align="center"><b>Global Biomarker Discovery (SHAP)</b></td>
-    <td align="center"><b>Patient-Level Precision (LIME)</b></td>
+    <td width="50%" align="center"><b>Model Performance Heatmap</b></td>
+    <td width="50%" align="center"><b>Architectural Ablation Study</b></td>
   </tr>
   <tr>
-    <td><img src="docs/paper_figures/shap_beeswarm.png" alt="SHAP Beeswarm" width="100%"></td>
-    <td><img src="docs/paper_figures/lime_comparison.png" alt="LIME Comparison" width="100%"></td>
+    <td align="center"><img src="docs/paper_figures/metrics_heatmap.png" alt="Performance Metrics Heatmap" width="100%"></td>
+    <td align="center"><img src="docs/paper_figures/ablation_study.png" alt="Model Ablation Study" width="100%"></td>
   </tr>
   <tr>
-    <td>Identifies `log_ic50_mean_pos` and `Tissue Type` as the absolute dominant drivers of drug resistance across the entire cohort.</td>
-    <td>Proves the Cross-Attention mechanism dynamically shifts feature importance for every unique patient-drug interaction.</td>
+    <td valign="top">The proposed architecture consistently outperforms all baselines (MLP, pure Transformer, pure BiLSTM) across Validation R², MSE, and MAE.</td>
+    <td valign="top">The ablation study definitively proves that the Cross-Attention Fusion layer is the most critical component driving predictive accuracy.</td>
   </tr>
 </table>
 
-### 3. Epistemic Uncertainty Quantification
-<p align="center">
-  <img src="docs/paper_figures/uncertainty_plots.png" alt="MC Dropout Uncertainty" width="80%">
-</p>
-Using **Monte Carlo (MC) Dropout**, the model reliably flags novel, out-of-distribution structures. The strong correlation between predictive variance and absolute error ensures the model knows when it is guessing.
-
 ---
 
-## 📚 Deep Dive Documentation
+## 🎯 Final Evaluation & Interpretability
 
-For extensive technical specifics, please refer to our dedicated documentation modules:
-- 📊 **[Extracted Notebook Plots](docs/SUPPLEMENTARY_FIGURES.md):** 114+ intermediate visualizations extracted directly from the research notebooks.
-- 🔬 **[Exploratory Data Analysis (EDA)](docs/EDA.md):** GDSC dataset breakdown and Murcko splitting logic.
-- 🧠 **[Mathematical Architecture](docs/ARCHITECTURE.md):** Rigorous formulation of the Dual-Stream Cross-Attention and Attention Pooling.
+<table align="center" width="100%">
+  <tr>
+    <td width="50%" align="center"><b>Scaffold-Blind Test Evaluation</b></td>
+    <td width="50%" align="center"><b>Global Biomarker Discovery (SHAP)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/paper_figures/test_evaluation.jpg" alt="Scaffold-Blind Test Evaluation" width="100%"></td>
+    <td align="center"><img src="docs/paper_figures/shap_summary.png" alt="SHAP Summary Plot" width="100%"></td>
+  </tr>
+  <tr>
+    <td valign="top">The model achieves tight error clustering and minimal bias during strict scaffold-blind testing on entirely novel chemical structures.</td>
+    <td valign="top">SHAP analysis renders the "black box" transparent, mapping how specific genomic expressions and tissue types directionally drive drug resistance.</td>
+  </tr>
+</table>
 
 ---
 
@@ -81,3 +92,12 @@ python scripts/train.py --epochs 200 --batch_size 8192 --lr 1e-3
 ```bash
 pytest tests/ -v
 ```
+
+---
+
+## 📚 Deep Dive Documentation
+
+For extensive technical specifics, please refer to our dedicated documentation modules:
+- 📊 **[Extracted Notebook Plots](docs/SUPPLEMENTARY_FIGURES.md):** 114+ intermediate visualizations extracted directly from the research notebooks.
+- 🔬 **[Exploratory Data Analysis (EDA)](docs/EDA.md):** GDSC dataset breakdown and Murcko splitting logic.
+- 🧠 **[Mathematical Architecture](docs/ARCHITECTURE.md):** Rigorous formulation of the Dual-Stream Cross-Attention and Attention Pooling.
