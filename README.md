@@ -12,6 +12,10 @@
   <img src="https://img.shields.io/badge/Validated%20R²-0.9958-brightgreen?style=flat-square" alt="R2">
 </p>
 
+<h3>
+  ➡️ <a href="docs/ARCHITECTURE.md">View the Complete Systems Architecture & 8 Research Flowcharts</a> ⬅️
+</h3>
+
 </div>
 
 ---
