@@ -18,6 +18,7 @@ To maintain a clean and professional repository, our comprehensive documentation
 - 🔬 **[Exploratory Data Analysis (EDA)](docs/EDA.md):** Detailed breakdown of the GDSC datasets, feature spaces, and our Murcko scaffold-blind splitting strategy.
 - 🧠 **[Model Architecture](docs/ARCHITECTURE.md):** The rigorous mathematical formulation of the Dual-Stream Cross-Attention, Transformer, BiLSTM, and Attention Pooling layers.
 - 📊 **[Experimental Results & Interpretability](docs/RESULTS.md):** Deep dive into the model's performance, including LIME/SHAP local explanations and MC Dropout uncertainty quantification.
+- 🖼️ **[Supplementary Figures Gallery](docs/SUPPLEMENTARY_FIGURES.md):** A complete, categorized archive of 114+ intermediate visualizations and diagnostic plots extracted directly from the research notebooks.
 
 ---
 
