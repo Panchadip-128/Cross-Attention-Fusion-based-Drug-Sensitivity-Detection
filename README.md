@@ -17,7 +17,7 @@
 
 Predicting patient-specific drug sensitivity from multi-omic profiles is a fundamental open problem in precision oncology. Existing approaches fail because they naively concatenate genomic and chemical feature vectors, ignoring the conditional structure of the interaction: *which mutations, in this patient, modulate the binding affinity of this specific molecular scaffold?*
 
-We address this with the **Dual-Stream Cross-Attention Fusion Network**, a novel architecture that treats the patient's genomic profile as a dynamic query attending over the drug's structural key-value encodings. Evaluated on 470,467 drug-cell-line interactions from the [GDSC1/2 database](https://www.cancerrxgene.org/) under **Murcko Scaffold-blind cross-validation** — the gold standard for measuring true out-of-distribution chemical generalization — our model achieves $R^2 = 0.9962$ ($p < 0.0001$ vs. Transformer baseline). We further integrate Monte Carlo Dropout for calibrated epistemic uncertainty quantification and SHAP/LIME for post-hoc clinical interpretability, enabling safe oncologist-supervised deployment.
+We address this with the **Dual-Stream Cross-Attention Fusion Network**, a novel architecture that treats the patient's genomic profile as a dynamic query attending over the drug's structural key-value encodings. Evaluated on 470,467 drug-cell-line interactions from the [GDSC1/2 database (DepMap Mirror)](https://depmap.org/portal/download/) under **Murcko Scaffold-blind cross-validation** — the gold standard for measuring true out-of-distribution chemical generalization — our model achieves $R^2 = 0.9962$ ($p < 0.0001$ vs. Transformer baseline). We further integrate Monte Carlo Dropout for calibrated epistemic uncertainty quantification and SHAP/LIME for post-hoc clinical interpretability, enabling safe oncologist-supervised deployment.
 
 **[Exploratory Data Analysis](docs/EDA.md) &nbsp;·&nbsp; [Neural Architecture](docs/ARCHITECTURE.md) &nbsp;·&nbsp; [Training & Evaluation](docs/TRAINING_AND_EVALUATION.md) &nbsp;·&nbsp; [Interpretability](docs/INTERPRETABILITY.md) &nbsp;·&nbsp; [Reproducibility](docs/HARDWARE_AND_REPRODUCIBILITY.md)**
 
@@ -65,7 +65,7 @@ This scalar $\alpha_i$ is not merely a weighting coefficient. It encodes the **d
 
 ### 2.1. Data Sources & Curation Pipeline
 
-The [Genomics of Drug Sensitivity in Cancer (GDSC1/2)](https://www.cancerrxgene.org/) databases provide pharmacogenomic profiling across 988 cancer cell lines. We applied a six-stage curation pipeline to produce a 470,467-interaction analysis-ready dataset free of structural ambiguity.
+The [Genomics of Drug Sensitivity in Cancer (GDSC1/2)](https://depmap.org/portal/download/) databases provide pharmacogenomic profiling across 988 cancer cell lines. We applied a six-stage curation pipeline to produce a 470,467-interaction analysis-ready dataset free of structural ambiguity.
 
 | Processing Stage | Unique Drugs | Unique Cell Lines | Total Interactions | Sparsity |
 | :--- | :---: | :---: | :---: | :---: |
