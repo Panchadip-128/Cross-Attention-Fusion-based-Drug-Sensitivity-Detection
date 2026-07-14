@@ -17,7 +17,7 @@
 
 Predicting patient-specific drug sensitivity from multi-omic profiles is a fundamental open problem in precision oncology. Existing approaches fail because they naively concatenate genomic and chemical feature vectors, ignoring the conditional structure of the interaction: *which mutations, in this patient, modulate the binding affinity of this specific molecular scaffold?*
 
-We address this with the **Dual-Stream Cross-Attention Fusion Network**, a novel architecture that treats the patient's genomic profile as a dynamic query attending over the drug's structural key-value encodings. Evaluated on 470,467 drug-cell-line interactions from the [GDSC1/2 database (DepMap Mirror)](https://depmap.org/portal/download/) under **Murcko Scaffold-blind cross-validation** — the gold standard for measuring true out-of-distribution chemical generalization — our model achieves $R^2 = 0.9962$ ($p < 0.0001$ vs. Transformer baseline). We further integrate Monte Carlo Dropout for calibrated epistemic uncertainty quantification and SHAP/LIME for post-hoc clinical interpretability, enabling safe oncologist-supervised deployment.
+We address this with the **Dual-Stream Cross-Attention Fusion Network**, a novel architecture that treats the patient's genomic profile as a dynamic query attending over the drug's structural key-value encodings. Evaluated on 470,467 drug-cell-line interactions from the GDSC datasets under **Murcko Scaffold-blind cross-validation** — the gold standard for measuring true out-of-distribution chemical generalization — our model achieves $R^2 = 0.9962$ ($p < 0.0001$ vs. Transformer baseline). We further integrate Monte Carlo Dropout for calibrated epistemic uncertainty quantification and SHAP/LIME for post-hoc clinical interpretability, enabling safe oncologist-supervised deployment.
 
 **[Exploratory Data Analysis](docs/EDA.md) &nbsp;·&nbsp; [Neural Architecture](docs/ARCHITECTURE.md) &nbsp;·&nbsp; [Training & Evaluation](docs/TRAINING_AND_EVALUATION.md) &nbsp;·&nbsp; [Interpretability](docs/INTERPRETABILITY.md) &nbsp;·&nbsp; [Reproducibility](docs/HARDWARE_AND_REPRODUCIBILITY.md)**
 
@@ -65,7 +65,15 @@ This scalar $\alpha_i$ is not merely a weighting coefficient. It encodes the **d
 
 ### 2.1. Data Sources & Curation Pipeline
 
-The [Genomics of Drug Sensitivity in Cancer (GDSC1/2)](https://depmap.org/portal/download/) databases provide pharmacogenomic profiling across 988 cancer cell lines. We applied a six-stage curation pipeline to produce a 470,467-interaction analysis-ready dataset free of structural ambiguity.
+The pharmacogenomic dataset used in this work was obtained from the **Genomics of Drug Sensitivity in Cancer (GDSC)** project through the original [**CancerRxGene**](https://www.cancerrxgene.org/) portal, which accompanied the GDSC1000 resource introduced by **Iorio *et al.* (2016)**. The dataset consists of **ANOVA-derived biomarker association statistics** describing relationships between genomic features and anticancer drug response, including drug annotations, molecular targets, target pathways, IC50 effect-size estimates, statistical significance measures, tissue-specific association statistics, microsatellite instability (MSI) significance, and false discovery rate (FDR) values.
+
+The GDSC project is currently maintained as part of the [**Cancer Dependency Map at the Wellcome Sanger Institute**](https://depmap.sanger.ac.uk/documentation/datasets/drug-sensitivity/), where updated drug sensitivity resources, documentation, and subsequent GDSC releases are publicly distributed:
+
+Successive GDSC releases incorporate updated biomarker association analyses and recomputed statistical values. Consequently, the archived dataset used throughout this study is not expected to be numerically identical to the latest publicly distributed releases. Similar archived GDSC ANOVA datasets continue to be employed in contemporary pharmacogenomic studies, including the work of **Khakzad *et al.* (2024)**.
+
+To ensure complete computational reproducibility, the **exact archived dataset** used for all preprocessing, feature engineering, model development, training, validation, and evaluation is included in this repository. All experimental results and performance metrics reported in this work were generated exclusively using this archived dataset.
+
+As GDSC is a continuously maintained resource, subsequent releases incorporate updates to biomarker association analyses and associated metadata. Accordingly, the archived dataset provided in this repository should be regarded as the authoritative dataset for reproducing the experiments reported in this study.
 
 | Processing Stage | Unique Drugs | Unique Cell Lines | Total Interactions | Sparsity |
 | :--- | :---: | :---: | :---: | :---: |
@@ -646,6 +654,35 @@ If you use this framework, dataset curation pipeline, or evaluation methodology 
   journal   = {IEEE Access},
   year      = {2024},
   url       = {https://github.com/Panchadip-128/Cross-Attention-Fusion-based-Drug-Sensitivity-Detection}
+}
+```
+### Dataset References
+
+The pharmacogenomic data used in this work originate from the **Genomics of Drug Sensitivity in Cancer (GDSC)** project. If you use the archived dataset included in this repository, please also cite the original GDSC publication:
+
+```bibtex
+@article{iorio2016,
+  title   = {A Landscape of Pharmacogenomic Interactions in Cancer},
+  author  = {Iorio, Francesco and Knijnenburg, Theo A. and Vis, Daniel J. and others},
+  journal = {Cell},
+  volume  = {166},
+  number  = {3},
+  pages   = {740--754},
+  year    = {2016},
+  doi     = {10.1016/j.cell.2016.06.017}
+}
+```
+
+For recent work utilizing similar archived GDSC ANOVA biomarker association datasets, see:
+
+```bibtex
+@article{khakzad2024,
+  title   = {Multi-output prediction of dose-response curves enables drug repositioning and biomarker discovery},
+  author  = {Khakzad, Mohammad and others},
+  journal = {npj Precision Oncology},
+  volume  = {8},
+  year    = {2024},
+  doi     = {10.1038/s41698-024-00691-x}
 }
 ```
 
