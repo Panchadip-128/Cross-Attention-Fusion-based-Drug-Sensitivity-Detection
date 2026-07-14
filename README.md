@@ -71,7 +71,7 @@ The GDSC project is currently maintained as part of the [**Cancer Dependency Map
 
 Successive GDSC releases incorporate updated biomarker association analyses and recomputed statistical values. Consequently, the archived dataset used throughout this study is not expected to be numerically identical to the latest publicly distributed releases. Similar archived GDSC ANOVA datasets continue to be employed in contemporary pharmacogenomic studies, including the work of **Khakzad *et al.* (2024)**.
 
-To ensure complete computational reproducibility, the **exact archived dataset** used for all preprocessing, feature engineering, model development, training, validation, and evaluation is included in this repository. All experimental results and performance metrics reported in this work were generated exclusively using this archived dataset.
+To ensure complete computational reproducibility, the **exact archived dataset** used for all preprocessing, feature engineering, model development, training, validation, and evaluation is included in this repository under the [`data/`](./data/) directory. All experimental results and performance metrics reported in this work were generated exclusively using this archived dataset.
 
 As GDSC is a continuously maintained resource, subsequent releases incorporate updates to biomarker association analyses and associated metadata. Accordingly, the archived dataset provided in this repository should be regarded as the authoritative dataset for reproducing the experiments reported in this study.
 
